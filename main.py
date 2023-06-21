@@ -1,4 +1,5 @@
 # Implementation of Conway's Game of Life
+# Alex O'Brien
 
 import time
 import pygame
