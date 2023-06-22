@@ -1,4 +1,4 @@
-# Implementation of Conway's Game of Life
+# Implementation of Falling Sand
 # Alex O'Brien
 
 import time
@@ -8,8 +8,8 @@ import numpy as np
 # Set Colour Values
 COLOR_BG = (10, 10, 10)
 COLOR_GRID = (40, 40, 40)
-COLOR_DIE_NEXT = (170, 170, 170)
-COLOR_ALIVE_NEXT = (255, 255, 255)
+COLOR_DIE_NEXT = (102, 102, 0)
+COLOR_ALIVE_NEXT = (255, 255, 0)
 
 
 # Cell Update Function
@@ -19,30 +19,25 @@ def update(screen, cells, size, with_progress=False):
 
     # Iterate over 2D 'cells' array
     for row, col in np.ndindex(cells.shape):
-        # Count number of neighbours
-        alive = np.sum(cells[row-1:row+2, col-1:col+2]) - cells[row, col]
-        # 'color' is BG if the cell is dead, or else it starts to change
+        # 'color' is BG if the cell is empty, or else it starts to change
         color = COLOR_BG if cells[row, col] == 0 else COLOR_ALIVE_NEXT
 
-        # Use 'alive' to see if a cell will die or not
+        # If current cell is filled, check space underneath and update values
         if cells[row, col] == 1:
-            if alive < 2 or alive > 3:
-                if with_progress:
+            if row < len(cells) - 1:
+                if cells[row+1, col] == 0:
+                    updated_cells[row, col] = 0
+                    updated_cells[row+1, col] = 1
                     color = COLOR_DIE_NEXT
-            elif 2 <= alive <= 3:
-                updated_cells[row, col] = 1
-                if with_progress:
+                else:
+                    updated_cells[row, col] = 1
                     color = COLOR_ALIVE_NEXT
-
-        else:
-            if alive == 3:
+            else:
                 updated_cells[row, col] = 1
-                if with_progress:
-                    color = COLOR_ALIVE_NEXT
 
-        # Draw the rectangle? What is getting drawn every update?
+        # Draw the rectangle?
         pygame.draw.rect(screen, color, (col * size, row * size, size - 1, size - 1))
-
+        
     return updated_cells
 
 
@@ -98,7 +93,7 @@ def main():
             pygame.display.update()
 
         # Tick time, smaller value means more compute cost but smoother movement
-        time.sleep(0.0001)
+        time.sleep(0.01)
 
 
 if __name__ == '__main__':
