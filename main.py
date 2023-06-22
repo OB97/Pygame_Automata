@@ -98,7 +98,7 @@ def main():
             pygame.display.update()
 
         # Tick time, smaller value means more compute cost but smoother movement
-        time.sleep(0.0001)
+        time.sleep(0.01)
 
 
 if __name__ == '__main__':
