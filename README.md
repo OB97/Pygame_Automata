@@ -1,5 +1,9 @@
 # Automata
 
-Implementing Conway's Game of Life in Python using Pygame
+Cellular Automata in Python using Pygame
 
 Required Modules: Pygame, NumPy, Time
+
+- Conway's Game of Life
+- Falling Sand
+- Simulation Games
