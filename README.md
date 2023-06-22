@@ -1,5 +1,7 @@
 # Automata
 
-Implementing Conway's Game of Life in Python using Pygame
+Implementing Falling Sand in Python
 
 Required Modules: Pygame, NumPy, Time
+
+Branched off of Conway's Game of Life, similar set up with different rules
