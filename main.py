@@ -63,8 +63,7 @@ def main():
 
     # Game Loop
     while True:
-        # When an event occurs
-        for event in pygame.event.get():
+        for event in pygame.event.get():  # When an event occurs
             # QUIT
             if event.type == pygame.QUIT:
                 pygame.quit()
@@ -74,9 +73,9 @@ def main():
                 # PAUSE
                 if event.key == pygame.K_SPACE:
                     running = not running
-                    update(screen, cells, 10)
-                    pygame.display.update()
-                    # RESET
+                    update(screen, cells, 10)  # update game-state
+                    pygame.display.update()  # update display
+                # RESET
                 elif event.key == pygame.K_ESCAPE:
                     if running:
                         running = not running
@@ -93,12 +92,12 @@ def main():
         # Fill screen AFTER checking events
         screen.fill(COLOR_GRID)
 
-        # if it is not paused, update cells and display
+        # If not paused, update cells and display
         if running:
             cells = update(screen, cells, 10, with_progress=True)
             pygame.display.update()
 
-        # Tick time, smaller value means more compute time, but smoother movement
+        # Tick time, smaller value means more compute cost but smoother movement
         time.sleep(0.0001)
 
 
