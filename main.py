@@ -58,27 +58,32 @@ def main():
     pygame.display.flip()
     pygame.display.update()
 
-    # running vs. paused, start paused
+    # running vs. paused
     running = False
 
     # Game Loop
     while True:
         # When an event occurs
         for event in pygame.event.get():
+            # QUIT
             if event.type == pygame.QUIT:
                 pygame.quit()
                 return
+            # KEY PRESS
             elif event.type == pygame.KEYDOWN:
+                # PAUSE
                 if event.key == pygame.K_SPACE:
                     running = not running
                     update(screen, cells, 10)
                     pygame.display.update()
+                    # RESET
                 elif event.key == pygame.K_ESCAPE:
                     if running:
                         running = not running
                     cells = np.zeros((60, 80))
                     update(screen, cells, 10)
                     pygame.display.update()
+            # FILL CELL
             if pygame.mouse.get_pressed()[0]:
                 pos = pygame.mouse.get_pos()
                 cells[pos[1] // 10, pos[0] // 10] = 1
