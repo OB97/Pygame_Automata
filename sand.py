@@ -27,16 +27,35 @@ def update(screen, cells, size, with_progress=False):
 
         # If current cell is filled, check space underneath and update values
         if cells[row, col] == 1:
-            if row < len(cells) - 1 and col < 80:  # If inside screen
-                if cells[row+1, col] == 0:  # If cell directly underneath is empty
+            # If inside matrix (avoid off-screen click error)
+            if row < len(cells) - 1 and col < len(cells[row]) - 1:
+                # If cell directly underneath is empty
+                if cells[row+1, col] == 0:
                     updated_cells[row, col] = 0
                     updated_cells[row+1, col] = 1
                     color = COLOR_DIE_NEXT
-                else:
+                # If the cells diagonal under current cell are empty
+                if cells[row+1, col+1] == 0 or cells[row+1, col-1] == 0:
+                    # Right diagonal cell
+                    if cells[row+1, col+1] == 0 and not cells[row+1, col-1] == 0:
+                        updated_cells[row, col] = 0
+                        updated_cells[row + 1, col+1] = 1
+                        color = COLOR_DIE_NEXT
+                    # Left diagonal cell
+                    if cells[row+1, col-1] == 0 and not cells[row+1, col+1] == 0:
+                        updated_cells[row, col] = 0
+                        updated_cells[row+1, col-1] = 1
+                        color = COLOR_DIE_NEXT
+
+                else:  # If cell under is not empty, the current cell stays alive
                     updated_cells[row, col] = 1
                     color = COLOR_ALIVE_NEXT
+            # If outside of matrix (want cells to collect at the bottom of the matrix, avoid collection on the side)
             else:
-                updated_cells[row, col] = 1
+                if row < len(cells) - 1:  # If col is outside matrix, current cell is left blank
+                    updated_cells[row, col] = 0
+                elif col < len(cells[row]):  # If row is outside matrix, current cell is filled
+                    updated_cells[row, col] = 1
 
         # Draw the rectangle?
         pygame.draw.rect(screen, color, (col * size, row * size, size - 1, size - 1))
@@ -98,7 +117,7 @@ def main():
             pygame.display.update()
 
         # Tick time
-        time.sleep(0.015)
+        time.sleep(0.01)
 
 
 if __name__ == '__main__':
