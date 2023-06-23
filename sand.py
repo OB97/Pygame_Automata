@@ -98,7 +98,7 @@ def main():
             pygame.display.update()
 
         # Tick time
-        time.sleep(0.02)
+        time.sleep(0.015)
 
 
 if __name__ == '__main__':
