@@ -6,7 +6,6 @@ import time
 class GameBoard:
 
     def __init__(self):
-        pygame.init()
         self.screen = pygame.display.set_mode((800, 600))
         self.cellGrid = np.zeros((60, 80))
         self.withProgress = False
@@ -16,6 +15,9 @@ class GameBoard:
 
     def getGrid(self):
         return self.cellGrid
+
+    def fillGrid(self, inColour):
+        return self.screen.fill(inColour)
 
     def updateGame(self, size):
         return self

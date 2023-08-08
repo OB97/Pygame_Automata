@@ -3,15 +3,19 @@ import numpy as np
 
 class Automaton:
 
-    def __init__(self, size, identifier):
+    def __init__(self, size, identifier, status):
         self.size = size
         self.identifier = identifier
+        self.status = status
 
     def getSize(self):
         return self.size
 
-    def getCells(self):
+    def getID(self):
         return self.identifier
 
     def nextMove(self):
         return self
+
+    def allMoves(self):
+        return

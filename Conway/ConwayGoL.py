@@ -48,12 +48,11 @@ def update(screen, cells, size, with_progress=False):
 
 # Main Function
 def main():
-    # Initialize screen + game variables
     pygame.init()
-    screen = pygame.display.set_mode((800, 600))
-    cells = np.zeros((60, 80))
-    screen.fill(COLOR_GRID)
-    update(screen, cells, 10)
+    # Init GameBoard Object
+
+    # fill screen - COLOUR_GRID
+    # update screen, cells, size 1
 
     pygame.display.flip()
     pygame.display.update()
@@ -79,7 +78,7 @@ def main():
                 elif event.key == pygame.K_ESCAPE:
                     if running:
                         running = not running
-                    cells = np.zeros((60, 80))
+                    cells = np.zeros((80, 60))
                     update(screen, cells, 10)
                     pygame.display.update()
             # FILL CELL
