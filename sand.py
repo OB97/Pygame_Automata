@@ -5,11 +5,10 @@ import time
 import pygame
 import numpy as np
 
-# Set Colour Values
+# Set Constant Values
 COLOR_BG = (10, 10, 10)
 COLOR_GRID = (40, 40, 40)
-COLOR_DIE_NEXT = (255, 255, 0)
-COLOR_ALIVE_NEXT = (255, 255, 0)
+COLOR_SAND = (255, 255, 0)
 
 SCREEN = pygame.display.set_mode((800, 600))
 EMPTY_GRID = np.zeros((60, 80))
@@ -23,34 +22,45 @@ def update(screen, cells, size, with_progress=False):
     # Iterate over 2D 'cells' array
     for row, col in np.ndindex(cells.shape):
         # 'color' is BG if the cell is empty, or else it starts to change
-        color = COLOR_BG if cells[row, col] == 0 else COLOR_ALIVE_NEXT
+        color = COLOR_BG if cells[row, col] == 0 else COLOR_SAND
 
-        # If current cell is filled, check space underneath and update values
+        # If current cell is not empty
         if cells[row, col] == 1:
             # If inside matrix (avoid off-screen click error)
             if row < len(cells) - 1 and col < len(cells[row]) - 1:
                 # If cell directly underneath is empty
-                if cells[row+1, col] == 0:
+                if move_status(cells, row, col) == 1:
                     updated_cells[row, col] = 0
-                    updated_cells[row+1, col] = 1
-                    color = COLOR_DIE_NEXT
-                # If the cells diagonal under current cell are empty
-                if cells[row+1, col+1] == 0 or cells[row+1, col-1] == 0:
-                    # Right diagonal cell
-                    if cells[row+1, col+1] == 0 and not cells[row+1, col-1] == 0:
+                    updated_cells[row + 1, col] = 1
+                    color = COLOR_SAND
+                # Left diagonal
+                elif move_status(cells, row, col) == 2:
+                    updated_cells[row, col] = 0
+                    updated_cells[row + 1, col - 1] = 1
+                    color = COLOR_SAND
+                # Right Diagonal
+                elif move_status(cells, row, col) == 3:
+                    updated_cells[row, col] = 0
+                    updated_cells[row + 1, col + 1] = 1
+                    color = COLOR_SAND
+                # Right AND Left are empty
+                else:
+                    rand = np.random.rand()
+                    # Move left
+                    if rand <= 0.49:
                         updated_cells[row, col] = 0
-                        updated_cells[row + 1, col+1] = 1
-                        color = COLOR_DIE_NEXT
-                    # Left diagonal cell
-                    if cells[row+1, col-1] == 0 and not cells[row+1, col+1] == 0:
+                        updated_cells[row + 1, col - 1] = 1
+                        color = COLOR_SAND
+                    # Move right
+                    else:
                         updated_cells[row, col] = 0
-                        updated_cells[row+1, col-1] = 1
-                        color = COLOR_DIE_NEXT
-
-                else:  # If cell under is not empty, the current cell stays alive
+                        updated_cells[row + 1, col + 1] = 1
+                        color = COLOR_SAND
+                # If no moves available, stay filled
+                if move_status(cells, row, col) == 0:
                     updated_cells[row, col] = 1
-                    color = COLOR_ALIVE_NEXT
-            # If outside of matrix (want cells to collect at the bottom of the matrix, avoid collection on the side)
+                    color = COLOR_SAND
+            # Outside of matrix
             else:
                 if row < len(cells) - 1:  # If col is outside matrix, current cell is left blank
                     updated_cells[row, col] = 0
@@ -59,8 +69,38 @@ def update(screen, cells, size, with_progress=False):
 
         # Draw the rectangle?
         pygame.draw.rect(screen, color, (col * size, row * size, size - 1, size - 1))
-        
+
     return updated_cells
+
+
+# Neighbour Checker
+def move_status(cells, row, col):
+    result = -1
+
+    # Define neighbours of passed in cell
+    under = cells[row + 1, col]
+    left = cells[row + 1, col - 1]
+    right = cells[row + 1, col + 1]
+
+    # No moves
+    if under == 1 and left == 1 and right == 1:
+        result = 0
+    # Moves
+    else:
+        # Move down
+        if under == 0:
+            result = 1
+        # Move left or right
+        elif left == 0 and right == 0:
+            result = 4
+        # Move left
+        elif left == 0 and right == 1:
+            result = 2
+        # Move right
+        elif left == 1 and right == 0:
+            result = 3
+
+    return result
 
 
 # Main Function
