@@ -1,29 +1,23 @@
 import numpy as np
-import pygame
-import time
+
+# GameBoard Object: stores the board state, with each cell in its grid either empty or containing an automaton
+### Grid, Automatons, Update
 
 
 class GameBoard(object):
 
-    def __init__(self, withProgress):
-        self.screen = pygame.display.set_mode((800, 600))
+    def __init__(self):
         self.cellGrid = np.zeros((60, 80))
-        self.withProgress = withProgress
-
-    def getScreen(self):
-        return self.screen
+        self.COLOR_BG = (10, 10, 10)
+        self.COLOR_GRID = (40, 40, 40)
+        self.COLOR_DIE_NEXT = (170, 170, 170)
+        self.COLOR_ALIVE_NEXT = (255, 255, 255)
 
     def getGrid(self):
         return self.cellGrid
 
-    def switchState(self):
-        if not self.withProgress:
-            self.withProgress = True
-        else:
-            self.withProgress = False
+    def setGrid(self, inp):
+        self.cellGrid = inp
 
-    def updateGame(self, size):
-        return self
-
-    def fillGrid(self, inColour):
-        self.screen.fill(inColour)
+    def updateGame(self, screen, size):
+        return self.cellGrid
