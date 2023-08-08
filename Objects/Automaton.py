@@ -1,7 +1,7 @@
 import numpy as np
 
 
-class Automaton:
+class Automaton(object):
 
     def __init__(self, size, identifier, status):
         self.size = size
