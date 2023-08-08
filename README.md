@@ -6,4 +6,5 @@ Required Modules: Pygame, NumPy, Time
 
 - Conway's Game of Life
 - Falling Sand
-- Simulation Games
+
+Beginning to generalize into objects that can be inherited for their specific implementation
