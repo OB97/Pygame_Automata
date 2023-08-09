@@ -6,12 +6,22 @@ import numpy as np
 
 class GameBoard(object):
 
-    def __init__(self):
-        self.cellGrid = np.zeros((60, 80))
-        self.COLOR_BG = (10, 10, 10)
-        self.COLOR_GRID = (40, 40, 40)
-        self.COLOR_DIE_NEXT = (170, 170, 170)
-        self.COLOR_ALIVE_NEXT = (255, 255, 255)
+    def __init__(self, cells):
+        self.withProgress = False
+        self.cellGrid = cells
+        self.COLOUR_BG = (10, 10, 10)
+        self.COLOUR_GRID = (40, 40, 40)
+        self.COLOUR_DIE = (170, 170, 170)
+        self.COLOUR_ALIVE = (255, 255, 255)
+
+    def getProgress(self):
+        return self.withProgress
+
+    def switchProgress(self):
+        if self.withProgress:
+            self.withProgress = False
+        elif not self.withProgress:
+            self.withProgress = True
 
     def getGrid(self):
         return self.cellGrid
@@ -19,5 +29,7 @@ class GameBoard(object):
     def setGrid(self, inp):
         self.cellGrid = inp
 
-    def updateGame(self, screen, size):
-        return self.cellGrid
+    def updateGame(self, screen):
+        updatedCells = np.zeros((self.cellGrid.shape[0], self.cellGrid.shape[1]))
+        return updatedCells
+
