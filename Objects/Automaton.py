@@ -3,9 +3,9 @@ import numpy as np
 
 class Automaton(object):
 
-    def __init__(self, size, identifier):
+    def __init__(self, size, location):
         self.size = size
-        self.identifier = identifier
+        self.location = location
         self.status = 0
         self.colour = None
         self.COLOUR_DIE = (170, 170, 170)
@@ -14,8 +14,8 @@ class Automaton(object):
     def getSize(self):
         return self.size
 
-    def getID(self):
-        return self.identifier
+    def getLocation(self):
+        return self.location
 
     def nextMove(self):
         return self
