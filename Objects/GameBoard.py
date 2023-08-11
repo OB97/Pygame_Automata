@@ -3,18 +3,18 @@ import pygame
 import random
 import sys
 
-# GameBoard Object: stores the board state, with each cell in its grid either empty or containing an automaton
-###
+# GameBoard Object
 
 grid_size = width, height = 1280, 720
 cell_size = 10
 color_dead = 0, 0, 0
 color_alive = 255, 255, 255
-fps_max = 20
+fps_max = 60
 
 
 class GameBoard(object):
 
+    # initialize board
     def __init__(self):
 
         self.FPSCLOCK = pygame.time.Clock()
@@ -27,11 +27,13 @@ class GameBoard(object):
         self.num_rows = int(height / cell_size)
         self.grids = []
         self.init_grids()
-        self.set_grid()
-        self.paused = False
+        self.set_random_grid()
+        self.paused = True
         self.game_over = False
 
+    # initialize grid
     def init_grids(self):
+        # sub-function
         def create_grid():
             rows = []
             for row_num in range(self.num_rows):
@@ -43,7 +45,7 @@ class GameBoard(object):
         self.grids.append(create_grid())
         self.active_grid = 0
 
-    def set_grid(self, value=None, grid=0):
+    def set_random_grid(self, value=None, grid=0):
         for r in range(self.num_rows):
             for c in range(self.num_cols):
                 if value is None:
@@ -53,24 +55,28 @@ class GameBoard(object):
                 self.grids[grid][r][c] = cell_value
 
     def draw_grid(self):
+        # reset grid
         self.clear_screen()
-        for c in range(self.num_cols):
-            for r in range(self.num_rows):
-                if self.grids[self.active_grid][r][c] == 1:
+        # iterate over columns
+        for col in range(self.num_cols):
+            # iterate over rows
+            for row in range(self.num_rows):
+                # if cell is alive
+                if self.grids[self.active_grid][row][col] == 1:
                     color = color_alive
                 else:
                     color = color_dead
 
-                posn = (int(c * cell_size + cell_size / 2),
-                        int(r * cell_size + cell_size / 2))
+                posn = (int(col * cell_size + cell_size / 2),
+                        int(row * cell_size + cell_size / 2))
                 pygame.draw.circle(self.screen, color, posn, int(cell_size / 2), 0)
         pygame.display.flip()
 
     def clear_screen(self):
         self.screen.fill(color_dead)
 
-    def get_cell(self, r, c):
-        return self.grids[self.active_grid][r][c]
+    def get_cell(self, row, col):
+        return self.grids[self.active_grid][row][col]
 
     def check_cell_neighbors(self, row_index, col_index):
         num_alive_neighbors = 0
@@ -102,7 +108,7 @@ class GameBoard(object):
         return self.grids[self.active_grid][row_index][col_index]
 
     def update_generation(self):
-        self.set_grid(0, self.inactive_grid())
+        self.set_random_grid(0, self.inactive_grid())
         for r in range(self.num_rows - 1):
             for c in range(self.num_cols - 1):
                 next_gen_state = self.check_cell_neighbors(r, c)
@@ -145,15 +151,14 @@ class GameBoard(object):
                     else:
                         self.paused = True
                         print("paused")
-                # Randomize the grid
                 elif event.unicode == 'r':
                     print("randomizing the grid")
                     self.active_grid = 0
-                    self.set_grid(None, self.active_grid)  # randomizing
-                    self.set_grid(0, self.inactive_grid())  # set to 0.
-                    self.draw_grid()  # Even if it is paused.
+                    self.set_random_grid(None, self.active_grid)
+                    self.set_random_grid(0, self.inactive_grid())
+                    self.draw_grid()
                 # Quit
-                elif event.unicode == 'q':  # If I press q, game_over becomes TRUE, which returns/ends in the def run().
+                elif event.unicode == 'q':
                     print("Quitting the grid")
                     self.game_over = True
 
