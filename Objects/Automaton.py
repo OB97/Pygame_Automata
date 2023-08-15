@@ -7,7 +7,7 @@ class Automaton(object):
         self.status = 0
 
     def __repr__(self):
-        return "Automaton Object"
+        return "Automaton Object - Value: " + str(self.getStatus())
 
     def getStatus(self):
         return self.status
@@ -17,7 +17,3 @@ class Automaton(object):
             self.status = 1
         else:
             self.status = 0
-
-
-if __name__ == "__main__":
-    a = Automaton()

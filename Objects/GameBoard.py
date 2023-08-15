@@ -7,11 +7,12 @@ from Objects import Automaton
 
 class GameBoard(object):
 
+    # INITIALIZE #
+
     # initialize board
     def __init__(self):
 
-        self.grid_empty_colour = 0, 0, 0
-        self.cell_dead_colour = 170, 170, 170
+        self.cell_dead_colour = 0, 0, 0
         self.cell_alive_colour = 255, 255, 255
         self.grid_size = width, height = 1280, 720
         self.cell_size = 10
@@ -22,42 +23,59 @@ class GameBoard(object):
 
         self.num_cols = int(width / self.cell_size)
         self.num_rows = int(height / self.cell_size)
-        self.grid = []
-        self.init_grid()
+
+        self.active_grid = []
+        self.temp_grid = []
+        self.init_grids()
+
         self.paused = True
         self.game_over = False
 
-    # initialize grid
-    def init_grid(self):
-        self.grid = [[Automaton.Automaton()] * self.num_cols] * self.num_rows
-        print(self.grid)
+    # Initialize Grid
+    # used during gameboard init
+    def init_grids(self):
+        self.active_grid = [[Automaton.Automaton()] * self.num_cols] * self.num_rows
+        self.temp_grid = [[Automaton.Automaton()] * self.num_cols] * self.num_rows
 
+    # GAME ACTIONS #
+
+    # Draw Grid
+    # used during main loop - missing other uses?
     def draw_grid(self):
         self.clear_screen()
         for row in range(self.num_rows):
             for col in range(self.num_cols):
+                obj = self.active_grid[row][col]
+                status = obj.getStatus()
+                colour = self.get_colour(status)
                 posn = (int(col * self.cell_size + self.cell_size / 2),
                         int(row * self.cell_size + self.cell_size / 2))
-                pygame.draw.circle(self.screen, self.getColour(self.grid[row][col]), posn, int(self.cell_size / 2), 0)
+                pygame.draw.circle(self.screen, colour, posn, int(self.cell_size / 2), 0)
+
         pygame.display.flip()
 
-    def clear_screen(self):
-        self.screen.fill(self.grid_empty_colour)
+    # Update Cells
+    # used in main loop, iterate over grid and perform operations on objs contained in cells
+    def update_grid(self):
+        print("old: ", self.active_grid[0][0:5])
+        for row in range(self.num_rows - 1):
+            for col in range(self.num_cols - 1):
+                # TESTING
+                if col % 2 == 0:
+                    continue
 
-    def getColour(self, inp):
-        status = inp.getStatus()
-        if status == 1:
-            return self.cell_alive_colour
-        else:
-            return self.cell_dead_colour
+                obj = self.temp_grid[row][col]
+                obj.switchStatus()
+                print("obj switched at: ", row, col)
 
-    def update_cells(self):
-        for row in range(self.num_rows):
-            for col in range(self.num_cols):
-                print(self.grid[row][col].switchStatus())
+        self.active_grid = self.temp_grid
+        print("new: ", self.active_grid[0][0:5])
 
+    # Handle Events
+    # used in main loop, check for event before performing operations on cells
     def handle_events(self):
         for event in pygame.event.get():
+
             # If Paused check for input
             if self.paused:
                 if event.type == pygame.MOUSEBUTTONDOWN:
@@ -71,6 +89,7 @@ class GameBoard(object):
                         print(posn)
                         pygame.draw.circle(self.screen, self.cell_alive_colour, posn, int(self.cell_size / 2), 0)
                 pygame.display.flip()
+
             # Check for event
             if event.type == pygame.KEYDOWN:
                 if event.unicode == 's':
@@ -88,6 +107,22 @@ class GameBoard(object):
                 elif event.unicode == 'q':
                     print("Quitting Grid")
                     self.game_over = True
+
             # Quit Button
             if event.type == pygame.QUIT:
                 sys.exit()
+
+    # UTILITY #
+
+    # Get Automaton Colour
+    # used in drawGrid, pass in the obj status value return respective colour of cell
+    def get_colour(self, inp):
+        if inp == 1:
+            return self.cell_alive_colour
+        else:
+            return self.cell_dead_colour
+
+    # Clear Screen
+    # used before drawing screen + gameboard init
+    def clear_screen(self):
+        self.screen.fill(self.cell_dead_colour)
