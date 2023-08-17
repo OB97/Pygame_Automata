@@ -7,11 +7,9 @@ from Objects import GameBoard
 # Main Function
 def run(game):
     pygame.init()
-    pygame.display.set_caption("Game of Life - Created by ")
     pygame.display.flip()
-    x = 0
 
-    while x < 5:
+    while True:
         if game.game_over:
             return
 
@@ -24,9 +22,9 @@ def run(game):
         game.update_grid()
         print("M-Draw Grid: ")
         game.draw_grid()
+        game.active_grid, game.backup_grid = game.backup_grid, game.active_grid
         print("M-Tick: ")
-        game.FPSCLOCK.tick(20)
-        x += 1
+        game.FPSCLOCK.tick(10)
 
 
 if __name__ == '__main__':

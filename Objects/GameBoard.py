@@ -1,6 +1,4 @@
-import numpy as np
 import pygame
-import random
 import sys
 from Objects import Automaton
 
@@ -12,6 +10,7 @@ class GameBoard(object):
     # initialize board
     def __init__(self):
 
+        pygame.display.set_caption("Game of Life - Created by Alex")
         self.cell_dead_colour = 0, 0, 0
         self.cell_alive_colour = 255, 255, 255
         self.grid_size = width, height = 1280, 720
@@ -25,7 +24,7 @@ class GameBoard(object):
         self.num_rows = int(height / self.cell_size)
 
         self.active_grid = []
-        self.temp_grid = []
+        self.backup_grid = []
         self.init_grids()
 
         self.paused = True
@@ -34,8 +33,8 @@ class GameBoard(object):
     # Initialize Grid
     # used during gameboard init
     def init_grids(self):
-        self.active_grid = [[Automaton.Automaton()] * self.num_cols] * self.num_rows
-        self.temp_grid = [[Automaton.Automaton()] * self.num_cols] * self.num_rows
+        self.active_grid = [[Automaton.Automaton() for _ in range(self.num_cols)] for _ in range(self.num_rows)]
+        self.backup_grid = [[Automaton.Automaton() for _ in range(self.num_cols)] for _ in range(self.num_rows)]
 
     # GAME ACTIONS #
 
@@ -57,19 +56,20 @@ class GameBoard(object):
     # Update Cells
     # used in main loop, iterate over grid and perform operations on objs contained in cells
     def update_grid(self):
-        print("old: ", self.active_grid[0][0:5])
+        temp_grid = [[Automaton.Automaton() for _ in range(self.num_cols)] for _ in range(self.num_rows)]
+
         for row in range(self.num_rows - 1):
             for col in range(self.num_cols - 1):
-                # TESTING
-                if col % 2 == 0:
-                    continue
+                obj = self.backup_grid[row][col]
+                n = obj.getNeighbours(self.backup_grid, row, col)
+                if obj.getStatus() == 1:
+                    if n == 2 or n == 3:
+                        temp_grid[row][col].switchStatus()
+                else:
+                    if n == 2:
+                        temp_grid[row][col].switchStatus()
 
-                obj = self.temp_grid[row][col]
-                obj.switchStatus()
-                print("obj switched at: ", row, col)
-
-        self.active_grid = self.temp_grid
-        print("new: ", self.active_grid[0][0:5])
+        self.backup_grid = temp_grid
 
     # Handle Events
     # used in main loop, check for event before performing operations on cells
