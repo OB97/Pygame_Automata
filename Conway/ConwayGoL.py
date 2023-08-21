@@ -20,8 +20,8 @@ def run(game):
 
         game.update_grid()
         game.draw_grid()
-        game.active_grid, game.inactive_grid = game.inactive_grid, game.active_grid  # game.switchGrid()?
-        game.FPSCLOCK.tick(10)
+        game.swap_grid()
+        game.FPSCLOCK.tick(30)
 
 
 if __name__ == '__main__':
