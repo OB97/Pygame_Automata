@@ -4,7 +4,7 @@ import random
 class Automaton(object):
 
     def __init__(self):
-        self.status = self.genStatus()
+        self.status = 1
 
     def __repr__(self):
         return "Automaton Object - Value: " + str(self.getStatus())

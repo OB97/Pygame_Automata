@@ -27,7 +27,6 @@ class GameBoard(object):
         self.active_grid = []
         self.inactive_grid = []
         self.init_grids()
-        print(self.active_grid)
 
         self.paused = True
         self.game_over = False
@@ -41,23 +40,26 @@ class GameBoard(object):
     ### GAME ACTIONS ###
 
     # Update Cells
-    # used in main loop, iterate over grid and perform operations on objs contained in cells
+    # used in main loop, where Automaton values change
     def update_grid(self):
         for row in range(self.num_rows - 1):
             for col in range(self.num_cols - 1):
                 obj = self.inactive_grid[row][col]
                 n = obj.getNeighbours(self.inactive_grid, row, col)
+                # if dead
                 if obj.getStatus() == 1:
                     if n == 2:
                         obj.setStatus(3)
+                # if dying
                 elif obj.getStatus() == 2:
                     obj.setStatus(1)
+                # if alive
                 elif obj.getStatus() == 3:
                     if n == 2 or n == 3:
                         obj.setStatus(2)
 
     # Draw Grid
-    # used during main loop - missing other uses?
+    # used during main loop, draw the grid colours
     def draw_grid(self):
         self.clear_screen()
         for row in range(self.num_rows):
@@ -73,6 +75,23 @@ class GameBoard(object):
     # used in main loop, check for event before performing operations on cells
     def handle_events(self):
         for event in pygame.event.get():
+
+            # If Paused check for input
+            if self.paused:
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    if event.button == 1:
+                        mousepos_x, mousepos_y = event.pos
+                        r, c = ((mousepos_x - self.cell_size / 2) // self.cell_size,
+                                (mousepos_y - self.cell_size / 2) // self.cell_size)
+                        print(r, c)
+                        posn = (int(r * self.cell_size + self.cell_size / 2),
+                                int(c * self.cell_size + self.cell_size / 2))
+                        print(posn)
+                        self.active_grid[int(r)][int(c)].setStatus(3)
+                        pygame.draw.circle(self.screen, self.cell_status3_colour, posn, int(self.cell_size / 2), 0)
+                pygame.display.flip()
+
+            # If not Paused look for input
             if event.type == pygame.KEYDOWN:
                 if event.unicode == 's':
                     if self.paused:
@@ -111,5 +130,8 @@ class GameBoard(object):
     def clear_screen(self):
         self.screen.fill(self.cell_status1_colour)
 
+    # Swap Active Grid
+    # used in main, active grid is what is shown - inactive grid is where operations are performed
+    # swap to show differences between active and inactive
     def swap_grid(self):
         self.active_grid, self.inactive_grid = self.inactive_grid, self.active_grid
