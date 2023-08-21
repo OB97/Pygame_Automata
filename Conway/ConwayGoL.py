@@ -18,12 +18,9 @@ def run(game):
         if game.paused:
             continue
 
-        print("M-Update Grid: ")
         game.update_grid()
-        print("M-Draw Grid: ")
         game.draw_grid()
-        game.active_grid, game.backup_grid = game.backup_grid, game.active_grid
-        print("M-Tick: ")
+        game.active_grid, game.inactive_grid = game.inactive_grid, game.active_grid  # game.switchGrid()?
         game.FPSCLOCK.tick(10)
 
 
