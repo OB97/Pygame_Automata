@@ -4,7 +4,7 @@ import random
 class Automaton(object):
 
     def __init__(self):
-        self.status = 0
+        self.status = self.genStatus()
 
     def __repr__(self):
         return "Automaton Object - Value: " + str(self.getStatus())
@@ -12,15 +12,15 @@ class Automaton(object):
     def getStatus(self):
         return self.status
 
+    @staticmethod
+    def genStatus():
+        return random.randint(0, 1)
+
     def switchStatus(self):
         if self.status == 0:
             self.status = 1
         else:
             self.status = 0
-
-    @staticmethod
-    def genStatus():
-        return random.randint(0, 1)
 
     @staticmethod
     def getNeighbours(grid, row, col):
