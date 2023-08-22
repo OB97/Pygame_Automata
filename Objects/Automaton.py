@@ -1,39 +1,42 @@
-import numpy as np
+import random
 
 
 class Automaton(object):
 
-    def __init__(self, size, identifier):
-        self.size = size
-        self.identifier = identifier
-        self.status = 0
-        self.colour = None
-        self.COLOUR_DIE = (170, 170, 170)
-        self.COLOUR_ALIVE = (255, 255, 255)
+    def __init__(self):
+        self.status = self.genStatus()
 
-    def getSize(self):
-        return self.size
-
-    def getID(self):
-        return self.identifier
-
-    def nextMove(self):
-        return self
-
-    def allMoves(self):
-        return self
+    def __repr__(self):
+        return "Automaton Object - Value: " + str(self.getStatus())
 
     def getStatus(self):
         return self.status
 
-    def setStatus(self, inp):
-        self.status = inp
+    @staticmethod
+    def genStatus():
+        return random.randint(0, 1)
 
-    def getColour(self):
+    def switchStatus(self):
         if self.status == 0:
-            return self.COLOUR_DIE
+            self.status = 1
         else:
-            return self.COLOUR_ALIVE
+            self.status = 0
 
-    def setColour(self, inp):
-        self.colour = inp
+    @staticmethod
+    def getNeighbours(grid, row, col):
+        count = 0
+        n1 = grid[row + 1][col]
+        n2 = grid[row - 1][col]
+        n3 = grid[row][col + 1]
+        n4 = grid[row][col - 1]
+
+        if n1.getStatus() == 1:
+            count += 1
+        if n2.getStatus() == 1:
+            count += 1
+        if n3.getStatus() == 1:
+            count += 1
+        if n4.getStatus() == 1:
+            count += 1
+
+        return count
