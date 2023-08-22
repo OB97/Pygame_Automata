@@ -25,7 +25,7 @@ class GameBoard(object):
         self.num_rows = int(height / self.cell_size)
 
         self.active_grid = []
-        self.inactive_grid = []
+        self.backup_grid = []
         self.init_grids()
 
         self.paused = True
@@ -142,6 +142,7 @@ class GameBoard(object):
     # Get Active Neighbours
     # used in update function, returns the number of active neighbour cells
     def getNeighbours(self, row, col):
+      
         count = 0
         n1 = self.active_grid[row + 1][col]
         n2 = self.active_grid[row - 1][col]
@@ -158,3 +159,4 @@ class GameBoard(object):
             count += 1
 
         return count
+

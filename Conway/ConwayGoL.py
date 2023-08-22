@@ -17,7 +17,7 @@ def run(game):
 
         if game.paused:
             continue
-
+            
         game.update_grid()
         game.draw_grid()
         game.swap_grid()

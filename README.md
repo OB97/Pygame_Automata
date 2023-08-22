@@ -7,6 +7,9 @@ Required Modules: Pygame, NumPy, Time
 - Conway's Game of Life
 - Falling Sand
 
+#August 16, 2023
+Leveraged ChatGPT to optimize and improve.
+
 #August 11, 2023
 Found an interesting implementation on stack overflow, got it working and am using it as a base for my implementation
 

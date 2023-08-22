@@ -18,3 +18,4 @@ class Automaton(object):
     @staticmethod
     def genStatus():
         return random.choice([1, 3])
+
