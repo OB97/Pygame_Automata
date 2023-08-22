@@ -17,14 +17,11 @@ def run(game):
 
         if game.paused:
             continue
-
-        print("M-Update Grid: ")
+            
         game.update_grid()
-        print("M-Draw Grid: ")
         game.draw_grid()
-        game.active_grid, game.backup_grid = game.backup_grid, game.active_grid
-        print("M-Tick: ")
-        game.FPSCLOCK.tick(10)
+        game.swap_grid()
+        game.FPSCLOCK.tick(30)
 
 
 if __name__ == '__main__':
