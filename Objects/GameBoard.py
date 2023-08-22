@@ -11,9 +11,9 @@ class GameBoard(object):
     def __init__(self):
 
         pygame.display.set_caption("Game of Life - Created by Alex")
-        self.cell_status1_colour = 0, 0, 0
-        self.cell_status2_colour = 100, 100, 100
-        self.cell_status3_colour = 255, 255, 255
+        self.cell_inactive_colour = 0, 0, 0
+        self.cell_change_colour = 100, 100, 100
+        self.cell_active_colour = 255, 255, 255
         self.grid_size = width, height = 1280, 720
         self.cell_size = 10
 
@@ -42,10 +42,10 @@ class GameBoard(object):
     # Update Cells
     # used in main loop, where Automaton values change
     def update_grid(self):
-        for row in range(self.num_rows - 1):
-            for col in range(self.num_cols - 1):
-                obj = self.inactive_grid[row][col]
-                n = obj.getNeighbours(self.inactive_grid, row, col)
+        for row in range(self.num_rows):
+            for col in range(self.num_cols):
+                obj = self.active_grid[row][col]
+                n = self.getNeighbours(row, col)
                 # if dead
                 if obj.getStatus() == 1:
                     if n == 2:
@@ -53,9 +53,12 @@ class GameBoard(object):
                 # if dying
                 elif obj.getStatus() == 2:
                     obj.setStatus(1)
-                # if alive
+                # if growing
                 elif obj.getStatus() == 3:
-                    if n == 2 or n == 3:
+                    obj.setStatus(4)
+                # if alive
+                elif obj.getStatus() == 4:
+                    if n == 1 or n == 4:
                         obj.setStatus(2)
 
     # Draw Grid
@@ -88,7 +91,7 @@ class GameBoard(object):
                                 int(c * self.cell_size + self.cell_size / 2))
                         print(posn)
                         self.active_grid[int(r)][int(c)].setStatus(3)
-                        pygame.draw.circle(self.screen, self.cell_status3_colour, posn, int(self.cell_size / 2), 0)
+                        pygame.draw.circle(self.screen, self.cell_active_colour, posn, int(self.cell_size / 2), 0)
                 pygame.display.flip()
 
             # If not Paused look for input
@@ -119,19 +122,39 @@ class GameBoard(object):
     # used in drawGrid, pass in the obj status value return respective colour of cell
     def get_colour(self, inp):
         if inp == 1:
-            return self.cell_status1_colour
-        elif inp == 2:
-            return self.cell_status2_colour
+            return self.cell_inactive_colour
+        elif inp == 2 or inp == 3:
+            return self.cell_change_colour
         else:
-            return self.cell_status3_colour
+            return self.cell_active_colour
 
     # Clear Screen
     # used before drawing screen + gameboard init
     def clear_screen(self):
-        self.screen.fill(self.cell_status1_colour)
+        self.screen.fill(self.cell_inactive_colour)
 
     # Swap Active Grid
     # used in main, active grid is what is shown - inactive grid is where operations are performed
     # swap to show differences between active and inactive
     def swap_grid(self):
         self.active_grid, self.inactive_grid = self.inactive_grid, self.active_grid
+
+    # Get Active Neighbours
+    # used in update function, returns the number of active neighbour cells
+    def getNeighbours(self, row, col):
+        count = 0
+        n1 = self.active_grid[row + 1][col]
+        n2 = self.active_grid[row - 1][col]
+        n3 = self.active_grid[row][col + 1]
+        n4 = self.active_grid[row][col - 1]
+
+        if n1.getStatus() == 4:
+            count += 1
+        if n2.getStatus() == 4:
+            count += 1
+        if n3.getStatus() == 4:
+            count += 1
+        if n4.getStatus() == 4:
+            count += 1
+
+        return count
