@@ -25,7 +25,7 @@ class GameBoard(object):
         self.num_rows = int(height / self.cell_size)
 
         self.active_grid = []
-        self.backup_grid = []
+        self.inactive_grid = []
         self.init_grids()
 
         self.paused = True
@@ -42,8 +42,8 @@ class GameBoard(object):
     # Update Cells
     # used in main loop, where Automaton values change
     def update_grid(self):
-        for row in range(self.num_rows):
-            for col in range(self.num_cols):
+        for row in range(self.num_rows - 1):
+            for col in range(self.num_cols - 1):
                 obj = self.active_grid[row][col]
                 n = self.getNeighbours(row, col)
                 # if dead
@@ -58,7 +58,7 @@ class GameBoard(object):
                     obj.setStatus(4)
                 # if alive
                 elif obj.getStatus() == 4:
-                    if n == 1 or n == 4:
+                    if n == 1 or n == 3:
                         obj.setStatus(2)
 
     # Draw Grid
@@ -90,7 +90,8 @@ class GameBoard(object):
                         posn = (int(r * self.cell_size + self.cell_size / 2),
                                 int(c * self.cell_size + self.cell_size / 2))
                         print(posn)
-                        self.active_grid[int(r)][int(c)].setStatus(3)
+                        aut = self.active_grid[int(r)][int(c)]
+                        aut.setStatus(4)
                         pygame.draw.circle(self.screen, self.cell_active_colour, posn, int(self.cell_size / 2), 0)
                 pygame.display.flip()
 
