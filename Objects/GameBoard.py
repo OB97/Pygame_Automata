@@ -1,4 +1,5 @@
 import pygame
+import random
 import sys
 from Objects import Automaton
 
@@ -12,8 +13,8 @@ class GameBoard(object):
 
         pygame.display.set_caption("Game of Life - Created by Alex")
         self.cell_inactive_colour = 0, 0, 0
-        self.cell_change_colour = 100, 100, 100
-        self.cell_active_colour = 255, 255, 255
+        self.cell_change_colour = 70, 70, 70
+        self.cell_active_colour = 150, 150, 150
         self.grid_size = width, height = 1280, 720
         self.cell_size = 10
 
@@ -25,16 +26,17 @@ class GameBoard(object):
         self.num_rows = int(height / self.cell_size)
 
         self.active_grid = []
-        self.backup_grid = []
+        self.inactive_grid = []
         self.init_grids()
 
         self.paused = True
         self.game_over = False
 
     # Initialize Grid
-    # used during gameboard init
+    # used during gameboard init, creates 2 empty grids
     def init_grids(self):
-        self.active_grid = [[Automaton.Automaton() for _ in range(self.num_cols)] for _ in range(self.num_rows)]
+        self.active_grid = [[Automaton.Automaton(self.genStatus()) for _ in range(self.num_cols)] for _ in
+                            range(self.num_rows)]
         self.inactive_grid = self.active_grid
 
     ### GAME ACTIONS ###
@@ -42,13 +44,13 @@ class GameBoard(object):
     # Update Cells
     # used in main loop, where Automaton values change
     def update_grid(self):
-        for row in range(self.num_rows):
-            for col in range(self.num_cols):
+        for row in range(self.num_rows - 1):
+            for col in range(self.num_cols - 1):
                 obj = self.active_grid[row][col]
                 n = self.getNeighbours(row, col)
                 # if dead
                 if obj.getStatus() == 1:
-                    if n == 2:
+                    if n == 2 or n == 3:
                         obj.setStatus(3)
                 # if dying
                 elif obj.getStatus() == 2:
@@ -65,14 +67,15 @@ class GameBoard(object):
     # used during main loop, draw the grid colours
     def draw_grid(self):
         self.clear_screen()
-        for row in range(self.num_rows):
-            for col in range(self.num_cols):
+        for row in range(self.num_rows - 1):
+            for col in range(self.num_cols - 1):
                 obj = self.active_grid[row][col]
                 colour = self.get_colour(obj.getStatus())
                 posn = (int(col * self.cell_size + self.cell_size / 2),
                         int(row * self.cell_size + self.cell_size / 2))
                 pygame.draw.circle(self.screen, colour, posn, int(self.cell_size / 2), 0)
         pygame.display.flip()
+        self.colourShift()
 
     # Handle Events
     # used in main loop, check for event before performing operations on cells
@@ -90,7 +93,7 @@ class GameBoard(object):
                         posn = (int(r * self.cell_size + self.cell_size / 2),
                                 int(c * self.cell_size + self.cell_size / 2))
                         print(posn)
-                        self.active_grid[int(r)][int(c)].setStatus(3)
+                        self.active_grid[int(r)][int(c)].setStatus(4)
                         pygame.draw.circle(self.screen, self.cell_active_colour, posn, int(self.cell_size / 2), 0)
                 pygame.display.flip()
 
@@ -142,7 +145,7 @@ class GameBoard(object):
     # Get Active Neighbours
     # used in update function, returns the number of active neighbour cells
     def getNeighbours(self, row, col):
-      
+
         count = 0
         n1 = self.active_grid[row + 1][col]
         n2 = self.active_grid[row - 1][col]
@@ -160,3 +163,44 @@ class GameBoard(object):
 
         return count
 
+    def colourShift(self):
+
+        rActive = self.cell_active_colour[0]
+        bActive = self.cell_active_colour[0]
+        gActive = self.cell_active_colour[2]
+        rInactive = self.cell_inactive_colour[0]
+        bInactive = self.cell_inactive_colour[1]
+        gInactive = self.cell_inactive_colour[2]
+        rChanging = self.cell_change_colour[0]
+        bChanging = self.cell_change_colour[1]
+        gChanging = self.cell_change_colour[2]
+
+        lst1 = [rActive, bActive, gActive, rInactive, bInactive, gInactive, rChanging, bChanging, gChanging]
+        lst2 = [rInactive, bInactive, gInactive]
+        lst3 = [rChanging, bChanging, gChanging]
+
+        for val1 in range(len(lst1)):
+            if lst1[val1] >= 200:
+                lst1[val1] = random.randint(185, 200)
+            else:
+                lst1[val1] += 1
+
+        for val2 in range(len(lst2)):
+            if lst2[val2] >= 30:
+                lst2[val2] = random.randint(15, 30)
+            else:
+                lst2[val2] += 1
+
+        for val3 in range(len(lst3)):
+            if lst3[val3] >= 175:
+                lst3[val3] = random.randint(85, 175)
+            else:
+                lst3[val3] += 1
+
+        self.cell_active_colour = lst1[0], lst1[1], lst1[2]
+        self.cell_inactive_colour = lst2[0], lst2[1], lst2[2]
+        self.cell_change_colour = lst3[0], lst3[1], lst3[2]
+
+    @staticmethod
+    def genStatus():
+        return random.choice([1, 4])
