@@ -3,8 +3,8 @@ import random
 
 class Automaton(object):
 
-    def __init__(self):
-        self.status = self.genStatus()
+    def __init__(self, inp):
+        self.status = inp
 
     def __repr__(self):
         return "Automaton Object - Value: " + str(self.getStatus())
@@ -15,7 +15,5 @@ class Automaton(object):
     def setStatus(self, inp):
         self.status = inp
 
-    @staticmethod
-    def genStatus():
-        return random.choice([1, 3])
+
 
