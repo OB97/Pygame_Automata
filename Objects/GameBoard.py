@@ -13,7 +13,7 @@ class GameBoard(object):
 
         pygame.display.set_caption("Game of Life - Created by Alex")
         self.cell_inactive_colour = 0, 0, 0
-        self.cell_change_colour = 70, 70, 70
+        self.cell_change_colour = 155, 0, 0
         self.cell_active_colour = 150, 150, 150
         self.grid_size = width, height = 1280, 720
         self.cell_size = 10
@@ -180,20 +180,20 @@ class GameBoard(object):
         lst3 = [rChanging, bChanging, gChanging]
 
         for val1 in range(len(lst1)):
-            if lst1[val1] >= 200:
-                lst1[val1] = random.randint(185, 200)
+            if lst1[val1] >= 100:
+                lst1[val1] = random.randint(10, 80)
             else:
                 lst1[val1] += 1
 
         for val2 in range(len(lst2)):
-            if lst2[val2] >= 30:
-                lst2[val2] = random.randint(15, 30)
+            if lst2[val2] >= 250:
+                lst2[val2] = random.randint(225, 230)
             else:
                 lst2[val2] += 1
 
         for val3 in range(len(lst3)):
-            if lst3[val3] >= 175:
-                lst3[val3] = random.randint(85, 175)
+            if lst3[val3] >= 75:
+                lst3[val3] = random.randint(100, 200)
             else:
                 lst3[val3] += 1
 
