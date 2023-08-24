@@ -7,6 +7,9 @@ Required Modules: Pygame, NumPy, Time
 - Conway's Game of Life
 - Falling Sand
 
+#August 24, 2023
+Decided to explore C#/C++ as a pygame replacement
+
 #August 16, 2023
 Leveraged ChatGPT to optimize and improve.
 
